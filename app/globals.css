@@ -1,0 +1,222 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        /* Light mode - Clean white with subtle grays */
+        --background: 0 0% 100%;
+        --foreground: 240 10% 3.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 240 10% 3.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 240 10% 3.9%;
+        /* Neon green/yellow accent */
+        --primary: 84 100% 59%;
+        --primary-foreground: 240 10% 3.9%;
+        --secondary: 240 4.8% 95.9%;
+        --secondary-foreground: 240 5.9% 10%;
+        --muted: 240 4.8% 95.9%;
+        --muted-foreground: 240 3.8% 46.1%;
+        --accent: 84 100% 59%;
+        --accent-foreground: 240 10% 3.9%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 240 5.9% 90%;
+        --input: 240 5.9% 90%;
+        --ring: 84 100% 59%;
+        --radius: 0.5rem;
+        --chart-1: 84 100% 59%;
+        --chart-2: 173 58% 39%;
+        --chart-3: 262 83% 58%;
+        --chart-4: 43 96% 56%;
+        --chart-5: 27 87% 67%;
+    }
+
+    .dark {
+        /* Dark mode - Deep blacks with neon accents */
+        --background: 240 10% 3.9%;
+        --foreground: 0 0% 98%;
+        --card: 240 10% 7%;
+        --card-foreground: 0 0% 98%;
+        --popover: 240 10% 7%;
+        --popover-foreground: 0 0% 98%;
+        /* Neon green/yellow accent */
+        --primary: 84 100% 59%;
+        --primary-foreground: 240 10% 3.9%;
+        --secondary: 240 3.7% 15.9%;
+        --secondary-foreground: 0 0% 98%;
+        --muted: 240 3.7% 15.9%;
+        --muted-foreground: 240 5% 64.9%;
+        --accent: 84 100% 59%;
+        --accent-foreground: 240 10% 3.9%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 240 3.7% 15.9%;
+        --input: 240 3.7% 15.9%;
+        --ring: 84 100% 59%;
+        --chart-1: 84 100% 59%;
+        --chart-2: 173 58% 39%;
+        --chart-3: 262 83% 58%;
+        --chart-4: 43 96% 56%;
+        --chart-5: 27 87% 67%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+@layer utilities {
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+    }
+
+    /* Smooth transitions */
+    .transition-smooth {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Glassmorphism effect */
+    .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .dark .glass {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(132, 204, 22, 0.1);
+    }
+
+    .glass-dark {
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Neon glow effects for dark mode */
+    .dark .neon-glow {
+        box-shadow: 0 0 10px rgba(132, 204, 22, 0.3),
+            0 0 20px rgba(132, 204, 22, 0.2),
+            0 0 30px rgba(132, 204, 22, 0.1);
+    }
+
+    .dark .neon-text {
+        text-shadow: 0 0 10px rgba(132, 204, 22, 0.5),
+            0 0 20px rgba(132, 204, 22, 0.3);
+    }
+
+    /* Gradient backgrounds for dark mode */
+    .dark .gradient-dark {
+        background: linear-gradient(135deg, #0f172a 0%, #000000 100%);
+    }
+
+    .dark .gradient-accent {
+        background: linear-gradient(135deg, rgba(132, 204, 22, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+    }
+}
+
+/* M
+arkdown prose styles */
+.prose {
+    @apply text-sm text-foreground;
+}
+
+.prose p {
+    @apply my-2;
+}
+
+.prose h1 {
+    @apply text-xl font-bold mt-4 mb-2;
+}
+
+.prose h2 {
+    @apply text-lg font-bold mt-3 mb-2;
+}
+
+.prose h3 {
+    @apply text-base font-semibold mt-2 mb-1;
+}
+
+.prose ul,
+.prose ol {
+    @apply my-2 ml-4;
+}
+
+.prose ul {
+    @apply list-disc;
+}
+
+.prose ol {
+    @apply list-decimal;
+}
+
+.prose li {
+    @apply my-1;
+}
+
+.prose code {
+    @apply bg-muted px-1 py-0.5 rounded text-xs font-mono;
+}
+
+.prose pre {
+    @apply bg-muted p-3 rounded my-2 overflow-x-auto;
+}
+
+.prose pre code {
+    @apply bg-transparent p-0;
+}
+
+.prose blockquote {
+    @apply border-l-4 border-border pl-4 italic my-2;
+}
+
+.prose a {
+    @apply text-primary underline;
+}
+
+.prose strong {
+    @apply font-semibold;
+}
+
+.prose em {
+    @apply italic;
+}
+
+.prose hr {
+    @apply my-4 border-border;
+}
+
+.prose table {
+    @apply w-full border-collapse my-2;
+}
+
+.prose th,
+.prose td {
+    @apply border border-border px-2 py-1;
+}
+
+.prose th {
+    @apply bg-muted font-semibold;
+}
