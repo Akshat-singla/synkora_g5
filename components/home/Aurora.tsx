@@ -155,7 +155,6 @@ export default function Aurora(props: AuroraProps) {
 
 		const geometry = new Triangle(gl);
 		if (geometry.attributes.uv) {
-			// @ts-expect-error allow cleanup
 			delete geometry.attributes.uv;
 		}
 
