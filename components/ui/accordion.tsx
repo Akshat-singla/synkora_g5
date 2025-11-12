@@ -50,7 +50,8 @@ export const AccordionItem = React.forwardRef<HTMLDivElement, AccordionItemProps
 			>
 				{React.Children.map(children, (child) => {
 					if (React.isValidElement(child)) {
-						return React.cloneElement(child, { ...child.props, value, isOpen });
+						// @ts-ignore
+                        return React.cloneElement(child, { ...child.props, value, isOpen });
 					}
 					return child;
 				})}

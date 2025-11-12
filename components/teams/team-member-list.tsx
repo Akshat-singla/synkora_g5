@@ -28,7 +28,7 @@ interface TeamMemberListProps {
     teamId: string;
     members: TeamMember[];
     currentUserRole: string | null;
-    onMembersUpdated: () => void;
+    onMembersUpdated(): void;
 }
 
 export function TeamMemberList({

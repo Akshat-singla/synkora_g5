@@ -30,8 +30,8 @@ type ProjectWithRelations = {
 
 interface ProjectHeaderProps {
     project: ProjectWithRelations;
-    onProjectUpdate: () => void;
-    onMenuClick?: () => void;
+    onProjectUpdate(): void;
+    onMenuClick?(): void;
 }
 
 export function ProjectHeader({ project, onProjectUpdate, onMenuClick }: ProjectHeaderProps) {

@@ -56,8 +56,10 @@ export async function POST(
 
         // Trigger sync
         const result = await syncGitHubRepository(project.gitRepo.id);
-
-        if (result.success) {
+        if (!result) {
+            console.log("ERROR: /api/projects/[id]/github/sync/route.ts POST: No result!")
+        }
+        else if (result.success) {
             return NextResponse.json({
                 success: true,
                 newCommitsCount: result.newCommitsCount,

@@ -15,8 +15,8 @@ import {
 
 interface CreateTeamModalProps {
     open: boolean;
-    onClose: () => void;
-    onTeamCreated: (team: any) => void;
+    onClose(): void;
+    onTeamCreated(team: any): void;
 }
 
 export function CreateTeamModal({ open, onClose, onTeamCreated }: CreateTeamModalProps) {

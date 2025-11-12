@@ -192,7 +192,15 @@ export async function DELETE(
         if (!task) {
             return NextResponse.json({ error: "Task not found" }, { status: 404 });
         }
-
+        else if (!task.project) {
+            return NextResponse.json({error: "Task project not found"}, {status: 404});
+        }
+        else if (!task.project.team) {
+            return NextResponse.json({error: "Task project team not found"}, {status: 404});
+        }
+        else if (!task.project.team.members) {
+            return NextResponse.json({error: "Task project team members not found"}, {status: 404});
+        }
         const teamMember = task.project.team.members[0];
         if (!teamMember || teamMember.role === "VIEWER") {
             return NextResponse.json(

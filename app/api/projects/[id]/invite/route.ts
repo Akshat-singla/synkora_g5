@@ -44,6 +44,12 @@ export async function POST(
                 { status: 404 }
             );
         }
+        else if (!project.team || !project.teamId) {
+            return NextResponse.json(
+                {error: "Project Team not found!"},
+                { status: 404 }
+            )
+        }
 
         const teamMember = project.team.members[0];
         if (!teamMember) {

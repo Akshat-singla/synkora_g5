@@ -11,9 +11,9 @@ import { Trash2 } from "lucide-react";
 
 interface EditTaskModalProps {
     open: boolean;
-    onOpenChange: (open: boolean) => void;
+    onOpenChange(open: boolean): void;
     task: Task | null;
-    onSubmit: (
+    onSubmit(
         taskId: string,
         data: {
             title?: string;
@@ -23,8 +23,8 @@ interface EditTaskModalProps {
             assigneeId?: string | null;
             dueDate?: string | null;
         }
-    ) => Promise<void>;
-    onDelete: (taskId: string) => Promise<void>;
+    ): Promise<void>;
+    onDelete(taskId: string): Promise<void>;
     teamMembers?: User[];
 }
 

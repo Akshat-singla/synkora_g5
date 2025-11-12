@@ -65,16 +65,16 @@ export async function syncGitHubRepository(repositoryId: string) {
                 });
 
                 // Log activity for new commit
-                await logActivity({
-                    projectId: repository.projectId,
-                    type: "GIT_COMMIT",
-                    data: {
+                await logActivity(
+                    repository.projectId,
+                    "GIT_COMMIT",
+                    {
                         sha: commit.sha,
                         message: commit.message,
                         author: commit.author,
                         url: commit.url,
                     },
-                });
+            );
 
                 newCommitsCount++;
             } catch (error) {

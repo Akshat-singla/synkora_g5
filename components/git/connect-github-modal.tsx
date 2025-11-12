@@ -20,9 +20,9 @@ interface Repository {
 
 interface ConnectGitHubModalProps {
     open: boolean;
-    onClose: () => void;
+    onClose(): void;
     projectId: string;
-    onConnected: () => void;
+    onConnected(): void;
 }
 
 export function ConnectGitHubModal({

@@ -22,10 +22,10 @@ import {
 
 interface InviteTeamMemberModalProps {
     open: boolean;
-    onClose: () => void;
+    onClose(): void;
     teamId: string;
     teamName: string;
-    onInviteSent: () => void;
+    onInviteSent(): void;
 }
 
 export function InviteTeamMemberModal({

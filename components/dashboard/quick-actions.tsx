@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Plus, Bot, GitBranch } from "lucide-react";
 
 interface QuickActionsProps {
-    onCreateProject: () => void;
+    onCreateProject(): void;
 }
 
 export function QuickActions({ onCreateProject }: QuickActionsProps) {

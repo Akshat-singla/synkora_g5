@@ -12,7 +12,7 @@ import remarkGfm from "remark-gfm";
 
 interface TaskDetailModalProps {
     open: boolean;
-    onOpenChange: (open: boolean) => void;
+    onOpenChange(open: boolean): void;
     task: (Task & { assignee?: User | null; createdBy?: User | null }) | null;
     onEdit?: () => void;
 }

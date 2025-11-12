@@ -22,10 +22,10 @@ import {
 
 interface InviteProjectMemberModalProps {
     open: boolean;
-    onClose: () => void;
+    onClose(): void;
     projectId: string;
     projectName: string;
-    onInviteSent: () => void;
+    onInviteSent(): void;
 }
 
 export function InviteProjectMemberModal({

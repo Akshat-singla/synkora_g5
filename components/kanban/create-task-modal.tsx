@@ -10,15 +10,15 @@ import { TaskPriority, TaskStatus, User } from "@/types";
 
 interface CreateTaskModalProps {
     open: boolean;
-    onOpenChange: (open: boolean) => void;
-    onSubmit: (data: {
+    onOpenChange(open: boolean): void;
+    onSubmit(data: {
         title: string;
         description?: string;
         priority: TaskPriority;
         status: TaskStatus;
         assigneeId?: string;
         dueDate?: string;
-    }) => Promise<void>;
+    }): Promise<void>;
     teamMembers?: User[];
 }
 

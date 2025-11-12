@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Task, TaskStatus, User, TaskPriority } from "@/types";
 import { Plus, Filter, Wifi, WifiOff } from "lucide-react";
 import { useRealtimeKanban } from "@/hooks/use-realtime-kanban";
+import { Toaster } from "@/components/ui/toaster"; // This import is now used
+import { toast } from "sonner"; // --- FIX 1: Import the toast function from sonner ---
 
 export default function KanbanPage() {
     const params = useParams();
@@ -116,9 +118,16 @@ export default function KanbanPage() {
                 setTasks((prev) => [...prev, newTask]);
                 // Broadcast to other users
                 broadcastTaskCreate(newTask);
+                // You might want to add a success toast here too
+                toast.success("Task created successfully");
+            } else {
+                toast.error("Failed to create task");
             }
         } catch (error) {
             console.error("Failed to create task:", error);
+            toast.error("Failed to create task", {
+                description: "An error occurred. Please try again.",
+            });
             throw error;
         }
     };
@@ -214,11 +223,15 @@ export default function KanbanPage() {
                 console.error("Failed to update task:", response.status, error);
                 // Rollback on error
                 setTasks(originalTasks);
+                toast.error("Failed to move task");
             }
         } catch (error) {
             console.error("Failed to move task:", error);
             // Rollback on error
             setTasks(originalTasks);
+            toast.error("Failed to move task", {
+                description: "An error occurred. Please try again.",
+            });
         }
     };
 
@@ -262,6 +275,9 @@ export default function KanbanPage() {
 
     return (
         <div className="space-y-6">
+            {/* --- FIX 2: Render the Toaster component --- */}
+            <Toaster />
+
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                     <h1 className="text-2xl font-bold bg-gradient-to-r from-lime-400 to-green-500 bg-clip-text text-transparent dark:neon-text">

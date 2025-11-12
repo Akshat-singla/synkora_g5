@@ -56,9 +56,13 @@ export async function checkProjectAccess(userId: string, projectId: string) {
     });
 
     if (!project) {
+        console.error("No project found!")
         return null;
     }
-
+    else if (!project.team) {
+        console.error("No project.team found!")
+        return null
+    }
     const teamMember = project.team.members[0];
     return teamMember ? { project, role: teamMember.role } : null;
 }
