@@ -31,8 +31,8 @@ export default function MarkdownPage() {
     const [isSaving, setIsSaving] = useState(false);
     const [showPreview, setShowPreview] = useState(true);
 
-    const saveTimeoutRef = useRef<NodeJS.Timeout>();
-    const typingTimeoutRef = useRef<NodeJS.Timeout>();
+    const saveTimeoutRef = useRef<NodeJS.Timeout>(null);
+    const typingTimeoutRef = useRef<NodeJS.Timeout>(null);
 
     useEffect(() => {
         fetchFiles();

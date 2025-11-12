@@ -15,8 +15,8 @@ import {
 
 interface CreateProjectModalProps {
     open: boolean;
-    onOpenChange: (open: boolean) => void;
-    onSubmit: (data: { name: string; description: string; teamId: string }) => Promise<void>;
+    onOpenChange(open: boolean): void;
+    onSubmit(data: { name: string; description: string; teamId: string }): Promise<void>;
     teams: { id: string; name: string }[];
 }
 

@@ -17,8 +17,8 @@ interface Team {
 
 interface TeamSettingsProps {
     team: Team;
-    onTeamUpdated: (team: any) => void;
-    onTeamDeleted: () => void;
+    onTeamUpdated(team: any): void;
+    onTeamDeleted(): void;
 }
 
 export function TeamSettings({ team, onTeamUpdated, onTeamDeleted }: TeamSettingsProps) {

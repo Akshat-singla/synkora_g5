@@ -23,9 +23,9 @@ interface MarkdownFile {
 interface MarkdownFileListProps {
     files: MarkdownFile[];
     selectedFileId: string | null;
-    onSelectFile: (fileId: string) => void;
-    onCreateFile: (title: string) => Promise<void>;
-    onDeleteFile: (fileId: string) => Promise<void>;
+    onSelectFile(fileId: string): void;
+    onCreateFile(title: string): Promise<void>;
+    onDeleteFile(fieldId: string): Promise<void>;
 }
 
 export function MarkdownFileList({

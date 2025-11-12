@@ -20,7 +20,7 @@ async function getUserProjectRole(userId: string, projectId: string) {
         },
     });
 
-    if (!project || project.team.members.length === 0) {
+    if ( !project || !project.team || project.team.members.length === 0) {
         return null;
     }
 

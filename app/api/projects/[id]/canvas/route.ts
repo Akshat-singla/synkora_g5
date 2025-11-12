@@ -117,7 +117,7 @@ export async function POST(
         } else {
             // Team project: check role
             const member = project.team?.members[0];
-            hasWriteAccess = member && (member.role === 'OWNER' || member.role === 'EDITOR');
+            hasWriteAccess = !member ? false : member && (member.role === 'OWNER' || member.role === 'EDITOR');
         }
 
         if (!hasWriteAccess) {

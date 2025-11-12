@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 interface MarkdownToolbarProps {
-    onInsert: (before: string, after?: string) => void;
+    onInsert(before: string, after?: string): void;
 }
 
 export function MarkdownToolbar({ onInsert }: MarkdownToolbarProps) {
