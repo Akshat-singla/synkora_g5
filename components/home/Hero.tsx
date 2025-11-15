@@ -39,8 +39,7 @@ export default function Hero() {
 								<span className="cursor-dot cursor-blue" />
 								Aether
 							</div> */}
-							<br />
-							<br />
+							
 							<br />
 							<br />
 							<div className="mx-auto max-w-4xl text-center text-4xl font-semibold leading-[1.08] text-white md:text-6xl lg:text-7xl">
@@ -53,17 +52,38 @@ export default function Hero() {
 								/>
 							</div>
 							<div className="mt-16 flex items-center justify-center gap-4">
-								<Button variant="outline" className="h-12 rounded-full px-8 text-sm tracking-wide bg-neutral-900/60 border-neutral-800 text-white hover:border-neutral-700">
-									<Link href="/login">LOGIN</Link>
-								</Button>
-								<Button
-									size="lg"
-									className="h-12 rounded-full px-8 text-sm font-semibold text-black bg-lime-300 hover:bg-lime-200 transition-transform will-change-transform hover:scale-[1.03] shadow-[0_0_0_6px_rgba(180,255,20,0.16),0_0_50px_rgba(180,255,20,0.3)]"
-								>
-									<Link href="/signup">Sign up</Link>
-									<ArrowRight className="ml-2 h-4 w-4" />
-								</Button>
-							</div>
+
+  {/* LOGIN BUTTON */}
+  <Button
+    variant="outline"
+    className="
+      neon-outline 
+      goblin-one 
+      h-12 rounded-full px-8 text-sm tracking-wide
+      bg-neutral-900/60 border-neutral-800 text-white
+      hover:border-lime-300 transition-all
+    "
+  >
+    <Link href="/login">LOGIN</Link>
+  </Button>
+
+  {/* SIGN UP BUTTON */}
+  <Button
+    size="lg"
+    className="
+      neon-solid 
+      goblin-one
+      h-12 rounded-full px-8 text-sm font-semibold text-black
+      bg-lime-300 hover:bg-lime-200 transition-transform 
+      shadow-[0_0_0_6px_rgba(180,255,20,0.16),0_0_50px_rgba(180,255,20,0.3)]
+    "
+  >
+    <Link href="/register">Sign up</Link>
+    <ArrowRight className="ml-2 h-4 w-4 arrow-move" />
+  </Button>
+
+</div>
+
 							<p className="mx-auto mt-6 max-w-2xl text-base text-white/60 md:text-lg">
 								Task management, live dashboards, and whiteboard collaboration in one powerful workspace.
 							</p>
