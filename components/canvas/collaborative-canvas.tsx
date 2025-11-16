@@ -13,6 +13,7 @@ export function CollaborativeCanvas({ projectId, canvasId }: CollaborativeCanvas
     const [editor, setEditor] = useState<Editor | null>(null);
     const { socket, isConnected } = useSocket();
 
+    const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
     // Flags & timers
     const isLoadingRef = useRef(false);
     const isSavingRef = useRef(false);
@@ -50,7 +51,7 @@ export function CollaborativeCanvas({ projectId, canvasId }: CollaborativeCanvas
     // --- Default seeding helper (uses richText per latest tldraw API) ---
     const seedDefaultSynkora = (e: Editor) => {
         if (!e || defaultSeededRef.current) return;
-        if (e.getCurrentPageShapeIds().length > 0) return;
+        if (e.getCurrentPageShapeIds().size > 0) return;
 
         // Place near the center of the viewport
         const vb = e.getViewportPageBounds();
@@ -106,7 +107,7 @@ export function CollaborativeCanvas({ projectId, canvasId }: CollaborativeCanvas
                             // @ts-ignore using internal snapshot API
                             await editor.store.loadSnapshot(data.state);
                             // Edge: if snapshot loads but there are no shapes
-                            if (editor.getCurrentPageShapeIds().length === 0) {
+                            if (editor.getCurrentPageShapeIds().size === 0) {
                                 seedDefaultSynkora(editor);
                             }
                         } catch (err) {
@@ -136,7 +137,9 @@ export function CollaborativeCanvas({ projectId, canvasId }: CollaborativeCanvas
     const saveCanvasState = useCallback(async () => {
         if (!editor || isSavingRef.current) return;
 
+        // mark saving state
         isSavingRef.current = true;
+        setSaveStatus('saving');
         try {
             const allRecords = editor.store.allRecords();
             const snapshot = {
@@ -144,13 +147,59 @@ export function CollaborativeCanvas({ projectId, canvasId }: CollaborativeCanvas
                 schema: editor.store.schema.serialize(),
             };
 
-            await fetch(`/api/projects/${projectId}/canvas`, {
+            // Ensure the snapshot is JSON-serializable. Try direct stringify first.
+            let bodyPayload: string;
+            try {
+                bodyPayload = JSON.stringify({ state: snapshot });
+            } catch (err) {
+                console.warn('Snapshot not directly serializable, attempting structured clone fallback', err);
+                try {
+                    // Try to make a shallow plain object copy of store
+                    const plainStore: Record<string, any> = {};
+                    const allRecords = editor.store.allRecords();
+                    allRecords.forEach((r: any) => {
+                        try {
+                            plainStore[r.id] = JSON.parse(JSON.stringify(r));
+                        } catch (e) {
+                            // Last resort: copy only primitive props
+                            const copy: any = {};
+                            Object.keys(r).forEach((k) => {
+                                const v = (r as any)[k];
+                                if (v === null) copy[k] = null;
+                                else if (['string', 'number', 'boolean'].includes(typeof v)) copy[k] = v;
+                            });
+                            plainStore[r.id] = copy;
+                        }
+                    });
+
+                    const fallback = { store: plainStore, schema: editor.store.schema.serialize() };
+                    bodyPayload = JSON.stringify({ state: fallback });
+                } catch (e2) {
+                    console.error('Failed to produce serializable snapshot for canvas save', e2);
+                    throw e2;
+                }
+            }
+
+            const res = await fetch(`/api/projects/${projectId}/canvas`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ state: snapshot }),
+                body: bodyPayload,
             });
+
+            if (!res.ok) {
+                const text = await res.text().catch(() => '<no body>');
+                console.error('Canvas save failed:', res.status, text);
+                throw new Error(`Failed to persist canvas: ${res.status}`);
+            }
+
+            setSaveStatus('saved');
+            // keep 'saved' visible briefly
+            setTimeout(() => {
+                setSaveStatus('idle');
+            }, 1500);
         } catch (error) {
             console.error('Failed to save canvas state:', error);
+            setSaveStatus('error');
         } finally {
             isSavingRef.current = false;
         }
@@ -200,6 +249,40 @@ export function CollaborativeCanvas({ projectId, canvasId }: CollaborativeCanvas
             }
         };
     }, [editor, socket, isConnected, projectId, saveCanvasState]);
+
+    // --- Save on window blur, visibility change, beforeunload, and editor focus loss ---
+    useEffect(() => {
+        if (!editor) return;
+
+        const saveNow = () => {
+            // clear any pending debounce and save immediately
+            if (saveTimeoutRef.current) {
+                clearTimeout(saveTimeoutRef.current);
+                saveTimeoutRef.current = null;
+            }
+            // fire and don't await
+            void saveCanvasState();
+        };
+
+        const onVisibility = () => {
+            if (document.hidden) saveNow();
+        };
+
+        const onBlur = () => saveNow();
+
+        const container = editor.getContainer();
+        container.addEventListener('focusout', onBlur);
+        window.addEventListener('blur', onBlur);
+        document.addEventListener('visibilitychange', onVisibility);
+        window.addEventListener('beforeunload', saveNow);
+
+        return () => {
+            container.removeEventListener('focusout', onBlur);
+            window.removeEventListener('blur', onBlur);
+            document.removeEventListener('visibilitychange', onVisibility);
+            window.removeEventListener('beforeunload', saveNow);
+        };
+    }, [editor, saveCanvasState]);
 
     // --- Handle incoming canvas updates from other users ---
     useEffect(() => {
@@ -317,9 +400,37 @@ export function CollaborativeCanvas({ projectId, canvasId }: CollaborativeCanvas
     }, [editor]);
 
     return (
-        <div className={`w-full h-full ${tldrawTheme === 'dark' ? 'bg-neutral-900' : 'bg-white'}`}>
+        <div className={`relative w-full h-full ${tldrawTheme === 'dark' ? 'bg-neutral-900' : 'bg-white'}`}>
+            {/* Save status badge (top-right) */}
+            <div className="absolute right-3 top-3 z-50">
+                {saveStatus === 'saving' && (
+                    <div className="flex items-center space-x-2 bg-yellow-100 text-yellow-800 px-2 py-1 rounded shadow">
+                        <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                        <span className="text-xs">Saving…</span>
+                    </div>
+                )}
+                {saveStatus === 'saved' && (
+                    <div className="flex items-center space-x-2 bg-green-100 text-green-800 px-2 py-1 rounded shadow">
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                        <span className="text-xs">Saved</span>
+                    </div>
+                )}
+                {saveStatus === 'error' && (
+                    <div className="flex items-center space-x-2 bg-red-100 text-red-800 px-2 py-1 rounded shadow">
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span className="text-xs">Save failed</span>
+                    </div>
+                )}
+            </div>
+
             <Tldraw
-                theme={tldrawTheme}
                 onMount={(ed) => setEditor(ed)}
             />
         </div>
