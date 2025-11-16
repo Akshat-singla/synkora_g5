@@ -36,6 +36,7 @@ model Account {
   provider          String
   providerAccountId String
   refresh_token     String? @db.Text
+  refresh_token_expires_in Int?
   access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
@@ -66,13 +67,15 @@ model Team {
   members     TeamMember[]
   projects    Project[]
   invitations TeamInvitation[]
-}
+  defaultTeamId String?
+  defaultTeam   Team?     @relation(fields: [defaultTeamId], references: [id])
 
 model TeamMember {
   id     String @id @default(cuid())
   teamId String
   userId String
-  role   Role   @default(VIEWER)
+  defaultTeamId String?
+
   
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

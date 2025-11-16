@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "./prisma";
+import { ensureDefaultTeam } from "@/lib/auth-utils";
 import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
@@ -73,6 +74,12 @@ export const authOptions: NextAuthOptions = {
         async jwt({ token, user, account }) {
             if (user) {
                 token.id = user.id;
+                try {
+                    // Ensure the user has a default personal team on sign-in
+                    await ensureDefaultTeam(user.id as string);
+                } catch (err) {
+                    console.error("Failed ensuring default team during jwt callback:", err);
+                }
             }
             // Store GitHub access token in JWT for later use
             if (account?.provider === "github" && account?.access_token) {
