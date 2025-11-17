@@ -243,7 +243,7 @@ export default function SpreadsheetPage() {
             rowSpan: rowSpan,
             colSpan: colSpan,
             className: "merged-cell"
-        };
+        } as any;
 
         for (let row = start.row; row <= end.row; row++) {
             for (let col = start.column; col <= end.column; col++) {
@@ -252,7 +252,7 @@ export default function SpreadsheetPage() {
                         value: "",
                         disabled: true,
                         className: "merged-hidden-cell"
-                    };
+                    } as any;
                 }
             }
         }
@@ -289,10 +289,10 @@ export default function SpreadsheetPage() {
                         ? data[row][col].value
                         : "",
                     className: ""
-                };
-                delete newData[row][col].rowSpan;
-                delete newData[row][col].colSpan;
-                delete newData[row][col].disabled;
+                } as any;
+                delete (newData[row][col] as any).rowSpan;
+                delete (newData[row][col] as any).colSpan;
+                delete (newData[row][col] as any).disabled;
             }
         }
 
@@ -312,7 +312,7 @@ export default function SpreadsheetPage() {
 
         for (let row = start.row; row <= end.row; row++) {
             for (let col = start.column; col <= end.column; col++) {
-                if (!newData[row][col]?.disabled) {
+                if (!(newData[row][col] as any)?.disabled) {
                     newData[row][col] = { value: "" };
                 }
             }
@@ -803,7 +803,7 @@ export default function SpreadsheetPage() {
                 >
                     <Spreadsheet
                         data={data}
-                        onChange={setData}
+                        onChange={(newData) => setData(newData as any)}
                         onSelect={handleSelect}
                         columnLabels={Array.from({ length: numCols }, (_, i) =>
                             String.fromCharCode(65 + (i % 26))
