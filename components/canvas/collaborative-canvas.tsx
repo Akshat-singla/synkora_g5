@@ -47,6 +47,44 @@ export function CollaborativeCanvas({ projectId, canvasId }: CollaborativeCanvas
             observer.disconnect();
         };
     }, []);
+    // --- Load canvas state from backend ---
+    const loadCanvasState = async () => {
+        if (!editor || isLoadingRef.current) return;
+        isLoadingRef.current = true;
+        try {
+            const response = await fetch(`/api/projects/${projectId}/canvas`);
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Loaded canvas state:', data);
+                const hasState = !!(data.state && Object.keys(data.state).length > 0);
+
+                if (hasState) {
+                    try {
+                        // @ts-ignore using internal snapshot API
+                        await editor.store.loadSnapshot(data.state);
+                        // Edge: if snapshot loads but there are no shapes
+                        if (editor.getCurrentPageShapeIds().size === 0) {
+                            seedDefaultSynkora(editor);
+                        }
+                    } catch (err) {
+                        console.warn('Could not load canvas snapshot:', err);
+                        seedDefaultSynkora(editor);
+                    }
+                } else {
+                    // No persisted state — seed default
+                    seedDefaultSynkora(editor);
+                }
+            } else {
+                // Not OK — still seed to keep UX smooth
+                seedDefaultSynkora(editor);
+            }
+        } catch (error) {
+            console.error('Failed to load canvas state:', error);
+            seedDefaultSynkora(editor);
+        } finally {
+            isLoadingRef.current = false;
+        }
+    };
 
     // --- Default seeding helper (uses richText per latest tldraw API) ---
     const seedDefaultSynkora = (e: Editor) => {
@@ -92,44 +130,6 @@ export function CollaborativeCanvas({ projectId, canvasId }: CollaborativeCanvas
 
     // --- Load canvas state on mount; seed default if none or empty ---
     useEffect(() => {
-        if (!editor || isLoadingRef.current) return;
-
-        const loadCanvasState = async () => {
-            isLoadingRef.current = true;
-            try {
-                const response = await fetch(`/api/projects/${projectId}/canvas`);
-                if (response.ok) {
-                    const data = await response.json();
-                    const hasState = !!(data.state && Object.keys(data.state).length > 0);
-
-                    if (hasState) {
-                        try {
-                            // @ts-ignore using internal snapshot API
-                            await editor.store.loadSnapshot(data.state);
-                            // Edge: if snapshot loads but there are no shapes
-                            if (editor.getCurrentPageShapeIds().size === 0) {
-                                seedDefaultSynkora(editor);
-                            }
-                        } catch (err) {
-                            console.warn('Could not load canvas snapshot:', err);
-                            seedDefaultSynkora(editor);
-                        }
-                    } else {
-                        // No persisted state — seed default
-                        seedDefaultSynkora(editor);
-                    }
-                } else {
-                    // Not OK — still seed to keep UX smooth
-                    seedDefaultSynkora(editor);
-                }
-            } catch (error) {
-                console.error('Failed to load canvas state:', error);
-                seedDefaultSynkora(editor);
-            } finally {
-                isLoadingRef.current = false;
-            }
-        };
-
         loadCanvasState();
     }, [editor, projectId]);
 
