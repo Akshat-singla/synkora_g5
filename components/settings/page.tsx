@@ -89,7 +89,7 @@ export default function SettingsPage(): React.ReactElement {
             <button
               type="button"
               onClick={openFilePicker}
-              className="absolute -bottom-1 -right-1 bg-violet-600 hover:bg-violet-500 p-2 rounded-full shadow-lg border border-slate-800"
+              className="absolute -bottom-1 -right-1 bg-green-600 hover:bg-yellow-500 p-2 rounded-full shadow-lg border border-slate-800"
               title="Change avatar"
             >
               <Camera className="h-4 w-4" />
@@ -106,7 +106,7 @@ export default function SettingsPage(): React.ReactElement {
 
           <div className="ml-auto flex items-center gap-3">
             <button className="px-4 py-2 bg-slate-800/40 text-sm rounded-md hover:bg-slate-800">Share</button>
-            <button className="px-4 py-2 bg-violet-600 hover:bg-violet-500 rounded-md">View Profile</button>
+            <button className="px-4 py-2 bg-green-600 hover:bg-yellow-500 rounded-md">View Profile</button>
           </div>
         </div>
 
@@ -181,7 +181,7 @@ export default function SettingsPage(): React.ReactElement {
                     onDragLeave={() => setDragOver(false)}
                     onDrop={onDrop}
                     className={`relative border-2 border-dashed rounded-xl p-6 flex items-center justify-center min-h-[160px] ${
-                      dragOver ? "border-violet-500 bg-slate-800/30" : "border-slate-700 bg-slate-900/20"
+                      dragOver ? "border-green-500 bg-slate-800/30" : "border-slate-700 bg-slate-900/20"
                     }`}
                   >
                     <div className="text-center">
@@ -194,7 +194,7 @@ export default function SettingsPage(): React.ReactElement {
                         <button
                           type="button"
                           onClick={openFilePicker}
-                          className="px-4 py-2 bg-violet-600 hover:bg-violet-500 rounded-md flex items-center gap-2"
+                          className="px-4 py-2 bg-green-600 hover:bg-yellow-500 rounded-md flex items-center gap-2"
                         >
                           <span>Upload</span>
                           <Edit2 className="h-4 w-4" />
@@ -255,7 +255,7 @@ export default function SettingsPage(): React.ReactElement {
                       Cancel
                     </button>
 
-                    <button type="submit" className="px-4 py-2 bg-violet-600 hover:bg-violet-500 rounded-md">
+                    <button type="submit" className="px-4 py-2 bg-green-600 hover:bg-yellow-500 rounded-md">
                       Save Changes
                     </button>
                   </div>
