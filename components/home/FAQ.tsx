@@ -14,7 +14,7 @@ const faqs = [
   {
     id: "item-2",
     question: "How is Synkora different from Notion or Trello?",
-    answer: "While Notion focuses on documentation and Trello on simple task management, Synkora combines real-time collaboration, visual workflows, live dashboards, and AI-assisted features in one unified workspace designed specifically for modern teams."
+    answer: "While Notion focuses on system knowledge and Trello on simple task management, Synkora combines real-time collaboration, visual workflows, live dashboards, and AI-assisted features in one unified workspace designed specifically for modern teams."
   },
   {
     id: "item-3",
@@ -41,26 +41,26 @@ const faqs = [
 export default function FAQ() {
   return (
     <section id="faq" className="py-24 bg-neutral-900">
-  <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6">
 
-    <div className="text-center mb-16 scroll-reveal opacity-100">
-      <div className="inline-flex items-center px-4 py-2 bg-primary/20 border border-primary/30 rounded-full text-sm text-primary mb-6">
-        FAQs
-      </div>
+        <div className="text-center mb-16 scroll-reveal opacity-100">
+          <div className="inline-flex items-center px-4 py-2 bg-primary/20 border border-primary/30 rounded-full text-sm text-primary mb-6">
+            FAQs
+          </div>
 
-      <h2 className="text-4xl md:text-5xl font-bold mb-6">
-        Everything you need to know about <br />
-        <span className="text-primary">Synkora</span>
-      </h2>
-    </div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Everything you need to know about <br />
+            <span className="text-primary">Synkora</span>
+          </h2>
+        </div>
 
- 
+
         {/* FAQ Accordion */}
         <div className="max-w-3xl mx-auto mb-20">
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, index) => (
-              <AccordionItem 
-                key={faq.id} 
+              <AccordionItem
+                key={faq.id}
                 value={faq.id}
                 className="bg-background border border-border rounded-lg px-6 animate-slide-up"
                 style={{ animationDelay: `${index * 100}ms` }}
@@ -72,7 +72,7 @@ export default function FAQ() {
                   <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
                 </AccordionContent>
               </AccordionItem>
-            ))} 
+            ))}
           </Accordion>
 
           <div className="text-center mt-12 animate-fade-in">
@@ -97,10 +97,10 @@ export default function FAQ() {
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
             Synkora helps you manage projects, share ideas, and stay visually connected — without switching between 5 tools. Early access opening soon.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
-            <Input 
-              type="email" 
+            <Input
+              type="email"
               placeholder="name@email.com"
               className="bg-background border-border focus:border-primary"
             />

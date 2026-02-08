@@ -9,10 +9,10 @@ export function Toaster() {
     return (
         <Sonner
             theme={theme as "light" | "dark" | "system"}
-            position="bottom-right"
+            position="top-right"
             toastOptions={{
                 classNames: {
-                    toast: "dark:bg-gray-950 dark:border-gray-800 dark:text-white",
+                    toast: "dark:bg-gray-950 dark:border-gray-800 dark:text-white animate-slide-in-from-top",
                     description: "dark:text-gray-400",
                     actionButton: "dark:bg-lime-500 dark:text-gray-900",
                     cancelButton: "dark:bg-gray-800 dark:text-gray-100",

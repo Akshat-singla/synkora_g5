@@ -26,16 +26,16 @@ export default function LoginPage() {
             const isDark = root.classList.contains("dark");
             setIsDarkMode(isDark);
         };
-        
+
         checkTheme();
-        
+
         // Watch for theme changes
         const observer = new MutationObserver(checkTheme);
         observer.observe(document.documentElement, {
             attributes: true,
             attributeFilter: ["class"],
         });
-        
+
         return () => observer.disconnect();
     }, [theme]);
 
@@ -76,9 +76,9 @@ export default function LoginPage() {
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-950 dark:to-black p-4 relative overflow-hidden">
-            <div 
+            <div
                 className="fixed inset-0 w-full h-full z-0"
-                style={{ 
+                style={{
                     position: 'fixed',
                     top: 0,
                     left: 0,
@@ -86,16 +86,16 @@ export default function LoginPage() {
                     bottom: 0,
                 }}
             >
-                <div 
+                <div
                     className="absolute inset-0 w-full h-full transition-opacity duration-300"
-                    style={{ 
-                        opacity: isDarkMode ? 1 : 0.25 
+                    style={{
+                        opacity: isDarkMode ? 1 : 0.25
                     }}
                 >
                     <DarkVeil />
                 </div>
                 {!isDarkMode && (
-                    <div 
+                    <div
                         className="absolute inset-0 bg-gradient-to-br from-white/70 via-slate-50/50 to-white/70 pointer-events-none"
                         style={{ zIndex: 1 }}
                     />

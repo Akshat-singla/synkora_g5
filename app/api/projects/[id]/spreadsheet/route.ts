@@ -6,6 +6,7 @@ import { z } from 'zod';
 
 const spreadsheetSchema = z.object({
     data: z.any(),
+    category: z.enum(['metrics', 'configurations', 'models']).optional(),
 });
 
 // GET /api/projects/[id]/spreadsheet - Load spreadsheet data
@@ -39,7 +40,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         if (!hasAccess) return NextResponse.json({ error: 'Access denied' }, { status: 403 });
 
         if (project.spreadsheet) {
-            return NextResponse.json({ id: project.spreadsheet.id, data: project.spreadsheet.data });
+            return NextResponse.json({
+                id: project.spreadsheet.id,
+                data: project.spreadsheet.data,
+                category: project.spreadsheet.category
+            });
         }
 
         return NextResponse.json({ data: null });
@@ -88,8 +93,15 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
         const spreadsheet = await prisma.spreadsheet.upsert({
             where: { projectId: params.id },
-            update: { data: parsed.data },
-            create: { projectId: params.id, data: parsed.data },
+            update: {
+                data: parsed.data,
+                category: parsed.category
+            },
+            create: {
+                projectId: params.id,
+                data: parsed.data,
+                category: parsed.category
+            },
         });
 
         return NextResponse.json({ id: spreadsheet.id, message: 'Spreadsheet saved' });

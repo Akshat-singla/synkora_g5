@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { CollaborativeCanvas } from '@/components/canvas/collaborative-canvas';
+import { ComponentList } from '@/components/canvas/component-list';
 import 'tldraw/tldraw.css';
 
 interface CanvasPageProps {
@@ -63,8 +64,10 @@ export default async function CanvasPage({ params }: CanvasPageProps) {
     }
 
     return (
-        <div className="h-[calc(100vh-8rem)] w-full">
-            <CollaborativeCanvas projectId={params.projectId} canvasId={canvas.id} />
+        <div className="h-[calc(100vh-8rem)] w-full flex">
+            <div className="flex-1">
+                <CollaborativeCanvas projectId={params.projectId} canvasId={canvas.id} />
+            </div>
         </div>
     );
 }

@@ -7,6 +7,8 @@ import { z } from "zod";
 const createMarkdownSchema = z.object({
     title: z.string().min(1, "Title is required"),
     content: z.string().default(""),
+    linkedComponentIds: z.array(z.string()).optional().default([]),
+    linkedDecisionIds: z.array(z.string()).optional().default([]),
 });
 
 // GET /api/projects/[id]/markdown - List all markdown files for a project
@@ -68,11 +70,42 @@ export async function GET(
                 title: true,
                 createdAt: true,
                 updatedAt: true,
+                componentMarkdowns: {
+                    select: {
+                        component: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
+                decisionMarkdowns: {
+                    select: {
+                        decision: {
+                            select: {
+                                id: true,
+                                title: true,
+                            },
+                        },
+                    },
+                },
             },
             orderBy: { updatedAt: "desc" },
         });
 
-        return NextResponse.json(markdownFiles);
+        // Transform to include orphan status
+        const filesWithOrphanStatus = markdownFiles.map(file => ({
+            id: file.id,
+            title: file.title,
+            createdAt: file.createdAt,
+            updatedAt: file.updatedAt,
+            isOrphaned: file.componentMarkdowns.length === 0 && file.decisionMarkdowns.length === 0,
+            linkedComponents: file.componentMarkdowns.map(cm => cm.component),
+            linkedDecisions: file.decisionMarkdowns.map(dm => dm.decision),
+        }));
+
+        return NextResponse.json(filesWithOrphanStatus);
     } catch (error) {
         console.error("Error fetching markdown files:", error);
         return NextResponse.json(
@@ -153,6 +186,26 @@ export async function POST(
                 projectId,
             },
         });
+
+        // Link to components if provided
+        if (validatedData.linkedComponentIds.length > 0) {
+            await prisma.componentMarkdown.createMany({
+                data: validatedData.linkedComponentIds.map(componentId => ({
+                    componentId,
+                    markdownId: markdownFile.id,
+                })),
+            });
+        }
+
+        // Link to decisions if provided
+        if (validatedData.linkedDecisionIds.length > 0) {
+            await prisma.decisionMarkdown.createMany({
+                data: validatedData.linkedDecisionIds.map(decisionId => ({
+                    decisionId,
+                    markdownId: markdownFile.id,
+                })),
+            });
+        }
 
         // Log activity
         await prisma.activity.create({

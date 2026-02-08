@@ -1,20 +1,8 @@
-/**
- * Standalone WebSocket Server for Synkora
- *
- * This server handles all real-time collaboration features:
- * - Canvas collaboration
- * - Kanban board updates
- * - Markdown editing
- * - Typing indicators
- * - User presence
- *
- * Run: node websocket-server.js
- * Port: 3001 (configurable via WS_PORT env variable)
- */
 
-const {createServer} = require("http");
-const {Server} = require("socket.io");
-const {verify} = require("jsonwebtoken");
+
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const { verify } = require("jsonwebtoken");
 
 // Configuration
 const WS_PORT = parseInt(process.env.WS_PORT || "3001", 10);
@@ -33,7 +21,7 @@ if (!NEXTAUTH_SECRET) {
 const httpServer = createServer((req, res) => {
     // Health check endpoint
     if (req.url === "/health" || req.url === "/") {
-        res.writeHead(200, {"Content-Type": "application/json"});
+        res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify({
             status: "healthy",
             service: "Synkora WebSocket Server",
@@ -109,7 +97,7 @@ io.on("connection", (socket) => {
 
     socket.on("join-project", (projectId) => {
         if (!projectId) {
-            socket.emit("error", {message: "Project ID is required"});
+            socket.emit("error", { message: "Project ID is required" });
             return;
         }
 
@@ -148,7 +136,7 @@ io.on("connection", (socket) => {
         });
 
         // Broadcast updated count to all users
-        io.to(projectId).emit("users:count", {count: activeUsers.length});
+        io.to(projectId).emit("users:count", { count: activeUsers.length });
     });
 
     socket.on("leave-project", (projectId) => {
@@ -174,7 +162,7 @@ io.on("connection", (socket) => {
                 users: activeUsers,
                 count: activeUsers.length,
             });
-            io.to(projectId).emit("users:count", {count: activeUsers.length});
+            io.to(projectId).emit("users:count", { count: activeUsers.length });
 
             // Clean up empty rooms
             if (roomUsers.size === 0) {
@@ -204,7 +192,7 @@ io.on("connection", (socket) => {
 
     socket.on("task:delete", (data) => {
         if (!data.projectId) return;
-        socket.to(data.projectId).emit("task:delete", {taskId: data.taskId});
+        socket.to(data.projectId).emit("task:delete", { taskId: data.taskId });
         console.log(`→ Task deleted in ${data.projectId} by ${socket.userName}`);
     });
 
@@ -218,14 +206,14 @@ io.on("connection", (socket) => {
     });
 
     // ============================================================
-    // CANVAS EVENTS
+    // ARCHITECTURE MAP EVENTS
     // ============================================================
 
     socket.on("canvas:update", (data) => {
         if (!data.projectId) return;
         socket.to(data.projectId).emit("canvas:update", data.changes);
         // Verbose logging disabled for performance (too many events)
-        // console.log(`→ Canvas update in ${data.projectId}`);
+        // console.log(`→ Architecture Map update in ${data.projectId}`);
     });
 
     socket.on("canvas:cursor", (data) => {
@@ -287,7 +275,7 @@ io.on("connection", (socket) => {
     // ============================================================
 
     socket.on("ping", () => {
-        socket.emit("pong", {timestamp: new Date().toISOString()});
+        socket.emit("pong", { timestamp: new Date().toISOString() });
     });
 
     // ============================================================
@@ -316,7 +304,7 @@ io.on("connection", (socket) => {
                     users: activeUsers,
                     count: activeUsers.length,
                 });
-                io.to(projectId).emit("users:count", {count: activeUsers.length});
+                io.to(projectId).emit("users:count", { count: activeUsers.length });
 
                 // Clean up empty rooms
                 if (roomUsers.size === 0) {

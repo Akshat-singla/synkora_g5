@@ -21,7 +21,7 @@ export function MainLayout({ children, user, showSearch = true }: MainLayoutProp
 
     return (
         <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-gray-950 dark:to-black">
-            {/* Desktop Sidebar */}
+            {/* Desktop Sidebar - Collapsible on tablet */}
             <Sidebar />
 
             {/* Mobile Sidebar Overlay */}
@@ -49,14 +49,14 @@ export function MainLayout({ children, user, showSearch = true }: MainLayoutProp
                 )}
             </AnimatePresence>
 
-            {/* Main Content */}
+            {/* Main Content - Three-column layout on desktop (sidebar, main, details panel) */}
             <div className="flex-1 flex flex-col min-w-0">
                 <TopBar
                     user={user}
                     onMenuClick={() => setIsMobileSidebarOpen(true)}
                     showSearch={showSearch}
                 />
-                <main className="flex-1">
+                <main className="flex-1 relative">
                     {children}
                 </main>
                 <Toaster />

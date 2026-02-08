@@ -137,8 +137,8 @@ async function main() {
 
     const task3 = await prisma.task.create({
         data: {
-            title: 'Build Kanban board UI',
-            description: 'Create drag-and-drop Kanban board with four columns',
+            title: 'Build Execution Board UI',
+            description: 'Create drag-and-drop Execution Board with four columns',
             status: 'TODO',
             priority: 'MEDIUM',
             position: 2,
@@ -177,7 +177,7 @@ async function main() {
         },
     });
 
-    console.log('✅ Created canvas for project');
+    console.log('✅ Created Architecture Map for project');
 
     // Create markdown file
     const existingMarkdown = await prisma.markdownFile.findFirst({
@@ -191,7 +191,7 @@ async function main() {
         data: {
             projectId: project.id,
             title: 'Project README',
-            content: '# Synkora Platform\n\nWelcome to the Synkora collaborative platform!\n\n## Features\n\n- Kanban board\n- Real-time collaboration\n- AI assistant\n- GitHub integration',
+            content: '# Synkora Platform\n\nWelcome to the Synkora collaborative platform!\n\n## Features\n\n- Execution Board\n- Real-time collaboration\n- AI assistant\n- GitHub integration',
         },
     });
 
@@ -208,7 +208,7 @@ async function main() {
                     ['Task', 'Status', 'Priority', 'Assignee'],
                     ['Set up authentication', 'In Progress', 'High', 'Alice'],
                     ['Design database schema', 'Done', 'High', 'Bob'],
-                    ['Build Kanban board', 'To Do', 'Medium', 'Bob'],
+                    ['Build Execution Board', 'To Do', 'Medium', 'Bob'],
                 ],
             },
         },

@@ -78,7 +78,7 @@ export function ProjectAIAssistant({ projectId, projectName }: ProjectAIAssistan
                 },
                 body: JSON.stringify({
                     message: userMessage.content,
-                    history: messages.slice(-10), // Send last 10 messages for context
+                    history: messages.slice(-10),
                 }),
             });
 
@@ -128,7 +128,6 @@ export function ProjectAIAssistant({ projectId, projectName }: ProjectAIAssistan
 
     return (
         <Card className="fixed bottom-6 right-6 w-96 h-[600px] shadow-2xl z-50 flex flex-col dark:bg-gray-900 dark:border-gray-800">
-            {/* Header */}
             <div className="flex items-center justify-between p-4 border-b dark:border-gray-800 bg-[#22c55e] text-white rounded-t-lg">
                 <div className="flex items-center gap-2">
                     <Bot className="h-5 w-5" />
@@ -172,8 +171,8 @@ export function ProjectAIAssistant({ projectId, projectName }: ProjectAIAssistan
                     >
                         <div
                             className={`max-w-[80%] rounded-lg p-3 ${message.role === "user"
-                                    ? "bg-[#22c55e] text-white"
-                                    : "bg-gray-100 dark:bg-gray-800 text-foreground"
+                                ? "bg-[#22c55e] text-white"
+                                : "bg-gray-100 dark:bg-gray-800 text-foreground"
                                 }`}
                         >
                             <p className="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -198,7 +197,7 @@ export function ProjectAIAssistant({ projectId, projectName }: ProjectAIAssistan
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Input */}
+
             <div className="p-4 border-t dark:border-gray-800">
                 <div className="flex gap-2">
                     <Input

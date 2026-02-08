@@ -159,7 +159,7 @@ export default function MarkdownPage() {
                 setFiles(prevFiles =>
                     prevFiles.map(file =>
                         file.id === selectedFileId
-                            ? {...file, updatedAt: updatedFile.updatedAt}
+                            ? { ...file, updatedAt: updatedFile.updatedAt }
                             : file
                     )
                 );
@@ -171,17 +171,23 @@ export default function MarkdownPage() {
         }
     };
 
-    const handleCreateFile = async (title: string) => {
+    const handleCreateFile = async (title: string, linkedComponentIds: string[], linkedDecisionIds: string[]) => {
         try {
             const response = await fetch(`/api/projects/${projectId}/markdown`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ title, content: "" }),
+                body: JSON.stringify({
+                    title,
+                    content: "",
+                    linkedComponentIds,
+                    linkedDecisionIds,
+                }),
             });
 
             if (response.ok) {
                 const newFile = await response.json();
-                setFiles([newFile, ...files]);
+                // Refetch files to get updated orphan status
+                await fetchFiles();
                 setSelectedFileId(newFile.id);
                 setContent("");
             }
@@ -230,6 +236,7 @@ export default function MarkdownPage() {
             <MarkdownFileList
                 files={files}
                 selectedFileId={selectedFileId}
+                projectId={projectId}
                 onSelectFile={setSelectedFileId}
                 onCreateFile={handleCreateFile}
                 onDeleteFile={handleDeleteFile}
@@ -261,7 +268,7 @@ export default function MarkdownPage() {
                         <div className="flex-1 flex overflow-hidden">
                             <div
                                 className={`${showPreview ? "w-1/2" : "w-full"
-                                } border-r dark:border-gray-800 overflow-hidden`}
+                                    } border-r dark:border-gray-800 overflow-hidden`}
                             >
                                 <MarkdownEditor
                                     value={content}

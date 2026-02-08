@@ -1,8 +1,21 @@
 import type { Metadata } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SessionProvider from "@/components/providers/session-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
+
+const inter = Inter({
+    subsets: ["latin"],
+    variable: "--font-inter",
+    display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+    subsets: ["latin"],
+    variable: "--font-jetbrains-mono",
+    display: "swap",
+});
 
 export const metadata: Metadata = {
     title: "Synkora - Collaborative Project Management",
@@ -31,7 +44,7 @@ export default function RootLayout({
             <head>
                 <link rel="apple-touch-icon" href="/icon-192x192.png" />
             </head>
-            <body className="antialiased">
+            <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
                 <ThemeProvider defaultTheme="dark" storageKey="synkora-theme">
                     <SessionProvider>
                         {children}

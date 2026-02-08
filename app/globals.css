@@ -11,22 +11,22 @@
         --card-foreground: 240 10% 3.9%;
         --popover: 0 0% 100%;
         --popover-foreground: 240 10% 3.9%;
-        /* Neon green/yellow accent */
-        --primary: 84 100% 59%;
-        --primary-foreground: 240 10% 3.9%;
+        /* Refined neon green accent with better contrast */
+        --primary: 84 81% 44%;
+        --primary-foreground: 0 0% 100%;
         --secondary: 240 4.8% 95.9%;
         --secondary-foreground: 240 5.9% 10%;
         --muted: 240 4.8% 95.9%;
         --muted-foreground: 240 3.8% 46.1%;
-        --accent: 84 100% 59%;
-        --accent-foreground: 240 10% 3.9%;
+        --accent: 84 81% 44%;
+        --accent-foreground: 0 0% 100%;
         --destructive: 0 84.2% 60.2%;
         --destructive-foreground: 0 0% 98%;
         --border: 240 5.9% 90%;
         --input: 240 5.9% 90%;
-        --ring: 84 100% 59%;
+        --ring: 84 81% 44%;
         --radius: 0.5rem;
-        --chart-1: 84 100% 59%;
+        --chart-1: 84 81% 44%;
         --chart-2: 173 58% 39%;
         --chart-3: 262 83% 58%;
         --chart-4: 43 96% 56%;
@@ -34,28 +34,28 @@
     }
 
     .dark {
-        /* Dark mode - Deep blacks with neon accents */
+        /* Dark mode - Deep blacks with refined neon accents */
         --background: 240 10% 3.9%;
         --foreground: 0 0% 98%;
         --card: 240 10% 7%;
         --card-foreground: 0 0% 98%;
         --popover: 240 10% 7%;
         --popover-foreground: 0 0% 98%;
-        /* Neon green/yellow accent */
-        --primary: 84 100% 59%;
+        /* Refined neon green accent with better contrast */
+        --primary: 84 81% 44%;
         --primary-foreground: 240 10% 3.9%;
         --secondary: 240 3.7% 15.9%;
         --secondary-foreground: 0 0% 98%;
         --muted: 240 3.7% 15.9%;
         --muted-foreground: 240 5% 64.9%;
-        --accent: 84 100% 59%;
+        --accent: 84 81% 44%;
         --accent-foreground: 240 10% 3.9%;
         --destructive: 0 62.8% 30.6%;
         --destructive-foreground: 0 0% 98%;
         --border: 240 3.7% 15.9%;
         --input: 240 3.7% 15.9%;
-        --ring: 84 100% 59%;
-        --chart-1: 84 100% 59%;
+        --ring: 84 81% 44%;
+        --chart-1: 84 81% 44%;
         --chart-2: 173 58% 39%;
         --chart-3: 262 83% 58%;
         --chart-4: 43 96% 56%;
@@ -69,11 +69,92 @@
     }
 
     body {
-        @apply bg-background text-foreground;
+        @apply bg-background text-foreground font-sans text-body;
+    }
+
+    h1 {
+        @apply text-h1;
+    }
+
+    h2 {
+        @apply text-h2;
+    }
+
+    h3 {
+        @apply text-h3;
+    }
+
+    code,
+    pre {
+        @apply font-mono;
     }
 }
 
 @layer utilities {
+
+    /* Touch-friendly tap targets */
+    .tap-target {
+        @apply min-h-[44px] min-w-[44px];
+    }
+
+    .tap-target-sm {
+        @apply min-h-[40px] min-w-[40px];
+    }
+
+    /* Responsive visibility utilities */
+    .mobile-only {
+        @apply block md:hidden;
+    }
+
+    .tablet-only {
+        @apply hidden md:block lg:hidden;
+    }
+
+    .desktop-only {
+        @apply hidden lg:block;
+    }
+
+    .mobile-tablet {
+        @apply block lg:hidden;
+    }
+
+    .tablet-desktop {
+        @apply hidden md:block;
+    }
+
+    /* Elevation utilities */
+    .elevation-1 {
+        @apply shadow-elevation-1 dark:shadow-elevation-1-dark;
+    }
+
+    .elevation-2 {
+        @apply shadow-elevation-2 dark:shadow-elevation-2-dark;
+    }
+
+    .elevation-3 {
+        @apply shadow-elevation-3 dark:shadow-elevation-3-dark;
+    }
+
+    .elevation-4 {
+        @apply shadow-elevation-4 dark:shadow-elevation-4-dark;
+    }
+
+    .elevation-5 {
+        @apply shadow-elevation-5 dark:shadow-elevation-5-dark;
+    }
+
+    /* Micro-interactions */
+    .hover-lift {
+        @apply transition-all duration-200 hover:scale-[1.02] hover:shadow-elevation-3 dark:hover:shadow-elevation-3-dark;
+    }
+
+    .hover-lift-sm {
+        @apply transition-all duration-200 hover:scale-[1.01] hover:shadow-elevation-2 dark:hover:shadow-elevation-2-dark;
+    }
+
+    .active-press {
+        @apply active:scale-[0.98] transition-transform duration-100;
+    }
 
     /* Rise-in animation */
     @keyframes riseIn {
@@ -82,6 +163,7 @@
             transform: translateY(14px) scale(0.98);
             filter: blur(2px);
         }
+
         100% {
             opacity: 1;
             transform: translateY(0) scale(1);
@@ -99,6 +181,7 @@
         transform: translateY(16px) scale(0.98);
         will-change: transform, opacity;
     }
+
     .reveal-on-scroll.in-view {
         opacity: 1;
         transform: none;
@@ -110,9 +193,11 @@
         0% {
             transform: translateY(0);
         }
+
         50% {
             transform: translateY(-4px);
         }
+
         100% {
             transform: translateY(0);
         }
@@ -138,19 +223,38 @@
 
     /* Neon green flicker */
     @keyframes neonFlicker {
-        0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px rgba(184,255,20,0.6)); }
-        50%      { opacity: 0.85; filter: drop-shadow(0 0 12px rgba(184,255,20,0.9)); }
+
+        0%,
+        100% {
+            opacity: 1;
+            filter: drop-shadow(0 0 6px rgba(184, 255, 20, 0.6));
+        }
+
+        50% {
+            opacity: 0.85;
+            filter: drop-shadow(0 0 12px rgba(184, 255, 20, 0.9));
+        }
     }
+
     .animate-neon-flicker {
         animation: neonFlicker 1.8s ease-in-out infinite;
     }
 
     /* Bar grow loop */
     @keyframes barGrow {
-        0%   { transform: scaleY(0.3); }
-        50%  { transform: scaleY(1); }
-        100% { transform: scaleY(0.4); }
+        0% {
+            transform: scaleY(0.3);
+        }
+
+        50% {
+            transform: scaleY(1);
+        }
+
+        100% {
+            transform: scaleY(0.4);
+        }
     }
+
     .animate-bar {
         transform-origin: bottom;
         animation: barGrow 2.4s ease-in-out infinite;
@@ -158,46 +262,88 @@
 
     /* Dot travel for scale chart */
     @keyframes travel {
-        0%   { transform: translateX(0) translateY(3px); }
-        50%  { transform: translateX(65%) translateY(-6px); }
-        100% { transform: translateX(100%) translateY(0); }
+        0% {
+            transform: translateX(0) translateY(3px);
+        }
+
+        50% {
+            transform: translateX(65%) translateY(-6px);
+        }
+
+        100% {
+            transform: translateX(100%) translateY(0);
+        }
     }
+
     .animate-travel {
         animation: travel 3s ease-in-out infinite;
     }
 
     /* Generic reveal animations */
     @keyframes slideUp {
-        0% { opacity: 0; transform: translateY(20px); }
-        100% { opacity: 1; transform: translateY(0); }
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
+
     .animate-slide-up {
-        animation: slideUp 700ms cubic-bezier(0.22,1,0.36,1) both;
+        animation: slideUp 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; } to { opacity: 1; }
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
     }
+
     .animate-fade-in {
         animation: fadeIn 900ms ease-out both;
     }
 
     @keyframes scaleIn {
-        0% { opacity: 0; transform: scale(0.96); }
-        100% { opacity: 1; transform: scale(1); }
+        0% {
+            opacity: 0;
+            transform: scale(0.96);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
+
     .animate-scale-in {
         animation: scaleIn 500ms ease-out both;
     }
 
     /* Star stagger reveal */
     @keyframes starReveal {
-        0% { transform: scale(0.6) rotate(-12deg); opacity: 0; filter: grayscale(1); }
-        100% { transform: scale(1) rotate(0deg); opacity: 1; filter: grayscale(0); }
+        0% {
+            transform: scale(0.6) rotate(-12deg);
+            opacity: 0;
+            filter: grayscale(1);
+        }
+
+        100% {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+            filter: grayscale(0);
+        }
     }
+
     .star-reveal {
         color: #B8FF14;
-        filter: drop-shadow(0 0 6px rgba(184,255,20,0.5));
+        filter: drop-shadow(0 0 6px rgba(184, 255, 20, 0.5));
         animation: starReveal 600ms ease-out both;
     }
 
@@ -219,26 +365,56 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Glassmorphism effect */
+    /* Glassmorphism effect - Strategic use for modals and popovers */
     .glass {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
     .dark .glass {
-        background: rgba(15, 23, 42, 0.7);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(132, 204, 22, 0.1);
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(132, 204, 22, 0.15);
     }
 
     .glass-dark {
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* Glass effect for modals */
+    .glass-modal {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .dark .glass-modal {
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(132, 204, 22, 0.2);
+    }
+
+    /* Glass effect for popovers */
+    .glass-popover {
+        background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .dark .glass-popover {
+        background: rgba(15, 23, 42, 0.9);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(132, 204, 22, 0.18);
     }
 
     /* Neon glow effects for dark mode */
@@ -267,6 +443,7 @@
         0% {
             background-position: 0% 0%, 0% 100%, 0% 0%, 100% 0%;
         }
+
         100% {
             background-position: 100% 0%, 100% 100%, 0% 100%, 100% 100%;
         }
@@ -275,7 +452,7 @@
     .marquee-border {
         position: relative;
         border: 1px solid transparent;
-        background: 
+        background:
             linear-gradient(90deg, rgba(255, 20, 147, 0.4) 0%, transparent 50%, rgba(138, 43, 226, 0.4) 100%) 0 0 / 200% 1px no-repeat,
             linear-gradient(180deg, rgba(30, 144, 255, 0.4) 0%, transparent 50%, rgba(255, 20, 147, 0.4) 100%) 100% 0 / 1px 200% no-repeat,
             linear-gradient(270deg, rgba(138, 43, 226, 0.4) 0%, transparent 50%, rgba(30, 144, 255, 0.4) 100%) 100% 100% / 200% 1px no-repeat,
@@ -294,10 +471,9 @@
     pointer-events: none;
 }
 
-/* M
-arkdown prose styles */
+/* Markdown prose styles */
 .prose {
-    @apply text-sm text-foreground;
+    @apply text-body text-foreground;
 }
 
 .prose p {
@@ -305,15 +481,15 @@ arkdown prose styles */
 }
 
 .prose h1 {
-    @apply text-xl font-bold mt-4 mb-2;
+    @apply text-h1 mt-4 mb-2;
 }
 
 .prose h2 {
-    @apply text-lg font-bold mt-3 mb-2;
+    @apply text-h2 mt-3 mb-2;
 }
 
 .prose h3 {
-    @apply text-base font-semibold mt-2 mb-1;
+    @apply text-h3 mt-2 mb-1;
 }
 
 .prose ul,

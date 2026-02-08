@@ -9,7 +9,10 @@ import {
     Palette,
     FileText,
     GitBranch,
-    FileSpreadsheet
+    FileSpreadsheet,
+    BookOpen,
+    FileCheck,
+    Clock
 } from "lucide-react";
 
 interface ProjectTabsProps {
@@ -18,40 +21,52 @@ interface ProjectTabsProps {
 
 const tabs = [
     {
-        name: "Kanban",
-        href: "kanban",
-        icon: LayoutDashboard,
+        name: "Architecture Map",
+        href: "canvas",
+        icon: Palette,
         shortcut: "1",
     },
     {
-        name: "Analytics",
-        href: "analytics",
-        icon: BarChart3,
+        name: "Decisions",
+        href: "decisions",
+        icon: FileCheck,
         shortcut: "2",
     },
     {
-        name: "Canvas",
-        href: "canvas",
-        icon: Palette,
+        name: "System Knowledge",
+        href: "markdown",
+        icon: BookOpen,
         shortcut: "3",
     },
     {
-        name: "Markdown",
-        href: "markdown",
-        icon: FileText,
+        name: "Spreadsheet",
+        href: "sheet",
+        icon: FileSpreadsheet,
         shortcut: "4",
+    },
+    {
+        name: "System Evolution",
+        href: "evolution",
+        icon: Clock,
+        shortcut: "5",
     },
     {
         name: "Git",
         href: "git",
         icon: GitBranch,
-        shortcut: "5",
+        shortcut: "6",
     },
     {
-        name: "Sheets",
-        href: "sheet",
-        icon: FileSpreadsheet,
-        shortcut: "6"
+        name: "Analytics",
+        href: "analytics",
+        icon: BarChart3,
+        shortcut: "7",
+    },
+    {
+        name: "Execution Board",
+        href: "kanban",
+        icon: LayoutDashboard,
+        shortcut: "8",
     }
 ];
 

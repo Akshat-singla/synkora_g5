@@ -11,9 +11,9 @@ interface ProjectBreadcrumbProps {
 }
 
 const tabNames: Record<string, string> = {
-    kanban: "Kanban Board",
+    kanban: "Execution Board",
     analytics: "Analytics",
-    canvas: "Canvas",
+    canvas: "Architecture Map",
     markdown: "Markdown",
     spreadsheet: "Spreadsheet",
     git: "Git Activity",

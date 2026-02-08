@@ -212,6 +212,58 @@ export async function GET(
             averageCompletionTime = Math.round(totalTime / completedTasksWithDates.length / (1000 * 60 * 60 * 24)); // Convert to days
         }
 
+        // Get system health metrics
+        // Get canvas for this project
+        const canvas = await prisma.canvas.findFirst({
+            where: { projectId },
+            select: { id: true },
+        });
+
+        let totalComponents = 0;
+        let totalDecisions = 0;
+        let architecturalChurn = 0;
+        let decisionCoverage = 0;
+        let healthScore = 0;
+
+        if (canvas) {
+            // Count components
+            totalComponents = await prisma.component.count({
+                where: { canvasId: canvas.id },
+            });
+
+            // Count decisions
+            totalDecisions = await prisma.decisionRecord.count({
+                where: { projectId },
+            });
+
+            // Calculate decision coverage (decisions per component ratio)
+            if (totalComponents > 0) {
+                const ratio = totalDecisions / totalComponents;
+                // Scale to percentage: 0 decisions = 0%, 1+ decision per component = 100%
+                decisionCoverage = Math.min(Math.round(ratio * 100), 100);
+            }
+
+            // Placeholder for architectural churn (will be calculated from Git data in future)
+            // For now, use a simple heuristic based on recent component updates
+            const recentComponentUpdates = await prisma.component.count({
+                where: {
+                    canvasId: canvas.id,
+                    updatedAt: {
+                        gte: thirtyDaysAgo,
+                    },
+                },
+            });
+
+            if (totalComponents > 0) {
+                architecturalChurn = Math.min(Math.round((recentComponentUpdates / totalComponents) * 100), 100);
+            }
+
+            // Calculate overall health score (0-100)
+            // Formula: weighted average of decision coverage (60%) and inverse churn (40%)
+            const churnPenalty = Math.max(0, 100 - architecturalChurn);
+            healthScore = Math.round((decisionCoverage * 0.6) + (churnPenalty * 0.4));
+        }
+
         // Format task distribution data
         const statusDistribution: Record<string, number> = {
             TODO: 0,
@@ -245,6 +297,13 @@ export async function GET(
             priorityDistribution,
             tasksByAssignee: tasksByAssigneeWithDetails,
             recentActivities,
+            systemHealth: {
+                healthScore,
+                totalComponents,
+                totalDecisions,
+                architecturalChurn,
+                decisionCoverage,
+            },
         });
     } catch (error) {
         console.error("Error fetching project analytics:", error);

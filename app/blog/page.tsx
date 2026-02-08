@@ -165,7 +165,7 @@
 //     </div>
 //   );
 // }
-"use client"; 
+"use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -222,7 +222,7 @@ const blogPosts = [
   },
   {
     id: 4,
-    title: "Managing projects with Kanban: best practices and tips",
+    title: "Managing projects with Execution Board: best practices and tips",
     excerpt: "Master the art of visual project management with our comprehensive guide...",
     category: "Features",
     author: {
@@ -251,7 +251,7 @@ const FeaturedBlogCard = ({ post }: { post: typeof blogPosts[0] }) => {
               {post.excerpt}
             </p>
           </div>
-          <Button 
+          <Button
             className="bg-accent hover:bg-accent/90 text-accent-foreground w-fit rounded-full"
             size="lg"
           >
@@ -259,9 +259,9 @@ const FeaturedBlogCard = ({ post }: { post: typeof blogPosts[0] }) => {
           </Button>
         </div>
         <div className="bg-secondary flex items-center justify-center p-8">
-          <img 
-            src={heroIllustration} 
-            alt="Team collaboration illustration" 
+          <img
+            src={heroIllustration}
+            alt="Team collaboration illustration"
             className="w-full h-full object-contain max-h-80"
           />
         </div>
@@ -274,8 +274,8 @@ const BlogCard = ({ post }: { post: typeof blogPosts[0] }) => {
   return (
     <div className="bg-card rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
       <div className="aspect-video bg-secondary overflow-hidden">
-        <img 
-          src={getIllustration(post.id)} 
+        <img
+          src={getIllustration(post.id)}
           alt={post.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
@@ -315,7 +315,7 @@ const Blog = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-     
+
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">

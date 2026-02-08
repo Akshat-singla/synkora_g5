@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -29,6 +29,23 @@ interface SidebarProps {
 export function Sidebar({ className }: SidebarProps) {
     const pathname = usePathname();
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isTablet, setIsTablet] = useState(false);
+
+    // Detect tablet viewport and auto-collapse
+    useEffect(() => {
+        const checkTablet = () => {
+            const tablet = window.innerWidth >= 768 && window.innerWidth < 1024;
+            setIsTablet(tablet);
+            if (tablet) {
+                setIsCollapsed(true);
+            }
+        };
+
+        checkTablet();
+        window.addEventListener('resize', checkTablet);
+
+        return () => window.removeEventListener('resize', checkTablet);
+    }, []);
 
     return (
         <motion.aside

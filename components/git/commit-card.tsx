@@ -1,9 +1,13 @@
 "use client";
 
-import { GitCommit, ExternalLink, User, Calendar } from "lucide-react";
+import { useState, useEffect } from "react";
+import { GitCommit, ExternalLink, User, Calendar, Tag, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getComponentColorScheme, getComponentTypeLabel } from '@/lib/component-colors';
+import { ComponentType } from '@/types/architecture';
 
 interface CommitCardProps {
     commit: {
@@ -14,16 +18,115 @@ interface CommitCardProps {
         committedAt: Date | string;
         url: string;
     };
+    projectId?: string;
     onExplainCommit?: (sha: string) => void;
 }
 
-export function CommitCard({ commit, onExplainCommit }: CommitCardProps) {
+interface Component {
+    id: string;
+    componentId: string;
+    name: string;
+    type: ComponentType;
+}
+
+interface ComponentTag {
+    componentId: string;
+    componentName: string;
+    taggedAt: string;
+}
+
+export function CommitCard({ commit, projectId, onExplainCommit }: CommitCardProps) {
+    const [components, setComponents] = useState<Component[]>([]);
+    const [taggedComponents, setTaggedComponents] = useState<ComponentTag[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [showTagging, setShowTagging] = useState(false);
+
     const commitDate = new Date(commit.committedAt);
     const shortSha = commit.sha.substring(0, 7);
 
     // Get first line of commit message
     const firstLine = commit.message.split("\n")[0];
     const hasMoreLines = commit.message.split("\n").length > 1;
+
+    useEffect(() => {
+        if (projectId && showTagging) {
+            fetchComponents();
+        }
+        if (projectId) {
+            fetchTaggedComponents();
+        }
+    }, [projectId, showTagging]);
+
+    const fetchComponents = async () => {
+        try {
+            const response = await fetch(`/api/projects/${projectId}/components-list`);
+            if (response.ok) {
+                const data = await response.json();
+                setComponents(data.components);
+            }
+        } catch (error) {
+            console.error('Error fetching components:', error);
+        }
+    };
+
+    const fetchTaggedComponents = async () => {
+        try {
+            const response = await fetch(`/api/commits/${commit.sha}/tags`);
+            if (response.ok) {
+                const data = await response.json();
+                setTaggedComponents(data.tags || []);
+            }
+        } catch (error) {
+            console.error('Error fetching tagged components:', error);
+        }
+    };
+
+    const handleTagComponent = async (componentId: string) => {
+        try {
+            setLoading(true);
+            const response = await fetch(`/api/commits/${commit.sha}/tag`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ componentId }),
+            });
+
+            if (response.ok) {
+                await fetchTaggedComponents();
+                setShowTagging(false);
+            } else {
+                console.error('Failed to tag component');
+            }
+        } catch (error) {
+            console.error('Error tagging component:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleRemoveTag = async (componentId: string) => {
+        try {
+            setLoading(true);
+            const response = await fetch(`/api/commits/${commit.sha}/tag`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ componentId }),
+            });
+
+            if (response.ok) {
+                await fetchTaggedComponents();
+            } else {
+                console.error('Failed to remove component tag');
+            }
+        } catch (error) {
+            console.error('Error removing component tag:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <Card className="p-4 hover:shadow-md transition-shadow">
@@ -66,6 +169,61 @@ export function CommitCard({ commit, onExplainCommit }: CommitCardProps) {
                         </Badge>
                     </div>
 
+                    {/* Tagged Components */}
+                    {taggedComponents.length > 0 && (
+                        <div className="mb-3">
+                            <div className="flex flex-wrap gap-1">
+                                {taggedComponents.map((tag) => (
+                                    <Badge
+                                        key={tag.componentId}
+                                        variant="outline"
+                                        className="text-xs flex items-center gap-1"
+                                    >
+                                        <Tag className="w-3 h-3" />
+                                        {tag.componentName}
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-4 w-4 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                                            onClick={() => handleRemoveTag(tag.componentId)}
+                                            disabled={loading}
+                                        >
+                                            <X className="w-3 h-3" />
+                                        </Button>
+                                    </Badge>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Component Tagging Dropdown */}
+                    {showTagging && projectId && (
+                        <div className="mb-3">
+                            <Select onValueChange={handleTagComponent} disabled={loading}>
+                                <SelectTrigger className="h-8 text-xs">
+                                    <SelectValue placeholder="Select component to tag..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {components
+                                        .filter(comp => !taggedComponents.some(tag => tag.componentId === comp.id))
+                                        .map((component) => {
+                                            const colorScheme = getComponentColorScheme(component.type);
+                                            return (
+                                                <SelectItem key={component.id} value={component.id}>
+                                                    <div className="flex items-center gap-2">
+                                                        <Badge variant="outline" className={`text-xs ${colorScheme.badgeClass}`}>
+                                                            {getComponentTypeLabel(component.type)}
+                                                        </Badge>
+                                                        {component.name}
+                                                    </div>
+                                                </SelectItem>
+                                            );
+                                        })}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    )}
+
                     <div className="flex items-center gap-2">
                         <Button
                             variant="outline"
@@ -76,6 +234,18 @@ export function CommitCard({ commit, onExplainCommit }: CommitCardProps) {
                             <ExternalLink className="w-3 h-3 mr-1" />
                             View on GitHub
                         </Button>
+
+                        {projectId && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 text-xs"
+                                onClick={() => setShowTagging(!showTagging)}
+                            >
+                                <Tag className="w-3 h-3 mr-1" />
+                                {showTagging ? 'Cancel' : 'Tag Component'}
+                            </Button>
+                        )}
 
                         {onExplainCommit && (
                             <Button

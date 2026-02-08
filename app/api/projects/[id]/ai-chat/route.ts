@@ -245,16 +245,16 @@ function generateFallbackResponse(
         if (lowerMessage.includes("how many") || lowerMessage.includes("count")) {
             const taskCount = context.taskSummary.split("\n").length - 1;
             return `You currently have ${taskCount} tasks in ${context.projectName}. ${taskCount > 10
-                    ? "Consider prioritizing the most important ones!"
-                    : "Great job keeping your task list manageable!"
+                ? "Consider prioritizing the most important ones!"
+                : "Great job keeping your task list manageable!"
                 }`;
         }
         if (lowerMessage.includes("create") || lowerMessage.includes("add")) {
-            return `To create a new task in ${context.projectName}, click the "Add Task" button on your Kanban board. You can set the title, description, priority, and assign it to team members.`;
+            return `To create a new task in ${context.projectName}, click the "Add Task" button on your Execution Board. You can set the title, description, priority, and assign it to team members.`;
         }
         if (lowerMessage.includes("organize") || lowerMessage.includes("manage")) {
             return `Here are some tips for managing tasks in ${context.projectName}:
-1. Use the Kanban board to visualize your workflow
+1. Use the Execution Board to visualize your workflow
 2. Set priorities (High, Medium, Low) for each task
 3. Assign tasks to specific team members
 4. Use due dates to track deadlines
@@ -274,14 +274,14 @@ function generateFallbackResponse(
     // Project-related queries
     if (lowerMessage.includes("project") || lowerMessage.includes("overview")) {
         return `You're working on "${context.projectName}". ${context.projectDescription
-                ? `Description: ${context.projectDescription}`
-                : ""
+            ? `Description: ${context.projectDescription}`
+            : ""
             }
 
 Available features:
-- Kanban board for task management
+- Execution Board for task management
 - Git integration for code tracking
-- Collaborative canvas for brainstorming
+- Architecture Map for brainstorming
 - Analytics dashboard for insights
 - Video meetings for team calls`;
     }
@@ -304,7 +304,7 @@ This helps you track progress and identify bottlenecks in ${context.projectName}
         lowerMessage.includes("what can you")
     ) {
         return `I can help you with:
-- Managing tasks and organizing your Kanban board
+- Managing tasks and organizing your Execution Board
 - Team collaboration and communication tips
 - Project planning and prioritization
 - Understanding analytics and metrics

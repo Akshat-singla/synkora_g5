@@ -13,7 +13,7 @@ interface TypingUser {
 interface UseTypingIndicatorOptions {
     socket: Socket | null;
     projectId: string;
-    context: string; // e.g., 'markdown:fileId' or 'canvas' or 'spreadsheet'
+    context: string; // e.g., 'markdown:fileId' or 'architecture-map' or 'spreadsheet'
     debounceMs?: number;
     timeoutMs?: number;
 }

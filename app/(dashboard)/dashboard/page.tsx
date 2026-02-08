@@ -2,10 +2,10 @@
 
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { ProjectCard } from "@/components/dashboard/project-card";
-import { QuickActions } from "@/components/dashboard/quick-actions";
-import { ActivityFeed } from "@/components/dashboard/activity-feed";
-import { CreateProjectModal } from "@/components/dashboard/create-project-modal";
+import { ProjectCard } from "@/islands/dashboard/project-card";
+import { QuickActions } from "@/islands/dashboard/quick-actions";
+import { ActivityFeed } from "@/islands/dashboard/activity-feed";
+import { CreateProjectModal } from "@/islands/dashboard/create-project-modal";
 import { ProjectInvitationsList } from "@/components/projects/project-invitations-list";
 import { useEffect, useState } from "react";
 import { Project, Team, Activity } from "@prisma/client";

@@ -9,8 +9,8 @@ export default function ProjectPage() {
     const projectId = params.projectId as string;
 
     useEffect(() => {
-        // Redirect to Kanban board as the default view
-        router.replace(`/projects/${projectId}/kanban`);
+        // Redirect to Architecture Map as the default view
+        router.replace(`/projects/${projectId}/canvas`);
     }, [projectId, router]);
 
     return null;

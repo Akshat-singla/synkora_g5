@@ -282,6 +282,7 @@ export function GitActivityFeed({ projectId, onExplainCommit }: GitActivityFeedP
                                         <CommitCard
                                             key={commit.sha}
                                             commit={commit}
+                                            projectId={projectId}
                                             onExplainCommit={onExplainCommit}
                                         />
                                     ))}

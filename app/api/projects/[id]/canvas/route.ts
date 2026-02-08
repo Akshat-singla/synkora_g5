@@ -3,12 +3,13 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
+import { validateArchitectureMapElements } from '@/lib/architecture-validation';
 
 // Excalidraw state schema - stored within the existing 'state' field
 const canvasStateSchema = z.object({
     elements: z.array(z.any()).optional().default([]),
-    appState: z.record(z.any()).optional().default({}),
-    files: z.record(z.any()).optional().default({}),
+    appState: z.record(z.string(), z.any()).optional().default({}),
+    files: z.record(z.string(), z.any()).optional().default({}),
 });
 
 // GET /api/projects/[id]/canvas - Load canvas state
@@ -58,7 +59,7 @@ export async function GET(
         // Return canvas state or empty state if not exists
         if (project.canvas && project.canvas.state) {
             const state = project.canvas.state as any;
-            
+
             return NextResponse.json({
                 id: project.canvas.id,
                 elements: state.elements || [],
@@ -76,9 +77,9 @@ export async function GET(
             version: 0,
         });
     } catch (error) {
-        console.error('Error loading canvas state:', error);
+        console.error('Error loading Architecture Map state:', error);
         return NextResponse.json(
-            { error: 'Failed to load canvas state' },
+            { error: 'Failed to load Architecture Map state' },
             { status: 500 }
         );
     }
@@ -140,6 +141,20 @@ export async function POST(
         const body = await request.json();
         const validatedData = canvasStateSchema.parse(body);
 
+        // Validate Architecture Map element types
+        if (validatedData.elements && validatedData.elements.length > 0) {
+            const validation = validateArchitectureMapElements(validatedData.elements);
+            if (!validation.valid) {
+                return NextResponse.json(
+                    {
+                        error: 'Invalid Architecture Map elements',
+                        details: validation.errors
+                    },
+                    { status: 400 }
+                );
+            }
+        }
+
         // Wrap Excalidraw data in the existing 'state' structure
         const canvasState = {
             elements: validatedData.elements || [],
@@ -168,7 +183,7 @@ export async function POST(
         return NextResponse.json({
             id: canvas.id,
             version: canvas.version,
-            message: 'Canvas state saved successfully',
+            message: 'Architecture Map state saved successfully',
         });
     } catch (error) {
         if (error instanceof z.ZodError) {
@@ -178,9 +193,9 @@ export async function POST(
             );
         }
 
-        console.error('Error saving canvas state:', error);
+        console.error('Error saving Architecture Map state:', error);
         return NextResponse.json(
-            { error: 'Failed to save canvas state' },
+            { error: 'Failed to save Architecture Map state' },
             { status: 500 }
         );
     }

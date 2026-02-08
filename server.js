@@ -1,7 +1,7 @@
 const { createServer } = require("http");
 const { parse } = require("url");
 const next = require("next");
-const {verify} = require("jsonwebtoken");
+const { verify } = require("jsonwebtoken");
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -32,7 +32,7 @@ app.prepare().then(() => {
     if (ENABLE_INTEGRATED_WEBSOCKET) {
         console.log("✓ Integrated WebSocket server enabled");
 
-        const {Server} = require("socket.io");
+        const { Server } = require("socket.io");
 
         io = new Server(httpServer, {
             cors: {
@@ -90,7 +90,7 @@ app.prepare().then(() => {
             // Join project room
             socket.on("join-project", (projectId) => {
                 if (!projectId) {
-                    socket.emit("error", {message: "Project ID is required"});
+                    socket.emit("error", { message: "Project ID is required" });
                     return;
                 }
 
@@ -158,7 +158,7 @@ app.prepare().then(() => {
                         users: activeUsers,
                         count: activeUsers.length
                     });
-                    io.to(projectId).emit("users:count", {count: activeUsers.length});
+                    io.to(projectId).emit("users:count", { count: activeUsers.length });
 
                     // Clean up empty rooms
                     if (roomUsers.size === 0) {
@@ -179,7 +179,7 @@ app.prepare().then(() => {
             });
 
             socket.on("task:delete", (data) => {
-                socket.to(data.projectId).emit("task:delete", {taskId: data.taskId});
+                socket.to(data.projectId).emit("task:delete", { taskId: data.taskId });
             });
 
             socket.on("task:move", (data) => {
@@ -189,7 +189,7 @@ app.prepare().then(() => {
                 });
             });
 
-            // Canvas events
+            // Architecture Map events
             socket.on("canvas:update", (data) => {
                 socket.to(data.projectId).emit("canvas:update", data.changes);
             });
@@ -238,7 +238,7 @@ app.prepare().then(() => {
 
             // Heartbeat/ping-pong for connection health
             socket.on("ping", () => {
-                socket.emit("pong", {timestamp: new Date().toISOString()});
+                socket.emit("pong", { timestamp: new Date().toISOString() });
             });
 
             // Handle disconnection
@@ -264,7 +264,7 @@ app.prepare().then(() => {
                             users: activeUsers,
                             count: activeUsers.length
                         });
-                        io.to(projectId).emit("users:count", {count: activeUsers.length});
+                        io.to(projectId).emit("users:count", { count: activeUsers.length });
 
                         // Clean up empty rooms
                         if (roomUsers.size === 0) {

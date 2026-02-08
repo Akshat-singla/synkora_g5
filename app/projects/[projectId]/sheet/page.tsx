@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import {useParams} from "next/navigation";
+import { useParams } from "next/navigation";
 import Spreadsheet from "react-spreadsheet";
 
 export default function SpreadsheetPage() {
@@ -31,6 +31,7 @@ export default function SpreadsheetPage() {
     const [mergedCells, setMergedCells] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+    const [category, setCategory] = useState<string>('');
     const spreadsheetRef = useRef<HTMLDivElement>(null);
     const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -47,6 +48,9 @@ export default function SpreadsheetPage() {
                     }
                     if (result.data && result.data.mergedCells) {
                         setMergedCells(result.data.mergedCells);
+                    }
+                    if (result.category) {
+                        setCategory(result.category);
                     }
                 }
             } catch (error) {
@@ -65,12 +69,13 @@ export default function SpreadsheetPage() {
             setSaveStatus('saving');
             const response = await fetch(`/api/projects/${projectId}/spreadsheet`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     data: {
                         cells: data,
                         mergedCells: mergedCells,
-                    }
+                    },
+                    category: category || undefined,
                 }),
             });
 
@@ -86,7 +91,7 @@ export default function SpreadsheetPage() {
             setSaveStatus('error');
             setTimeout(() => setSaveStatus('idle'), 3000);
         }
-    }, [data, mergedCells, projectId]);
+    }, [data, mergedCells, category, projectId]);
 
     // Trigger auto-save when data changes
     useEffect(() => {
@@ -105,7 +110,7 @@ export default function SpreadsheetPage() {
                 clearTimeout(saveTimeoutRef.current);
             }
         };
-    }, [data, mergedCells, saveSpreadsheet, isLoading]);
+    }, [data, mergedCells, category, saveSpreadsheet, isLoading]);
 
     // Save on blur, visibility change, and beforeunload
     useEffect(() => {
@@ -466,9 +471,9 @@ export default function SpreadsheetPage() {
 
     if (isLoading) {
         return (
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
-                <div style={{textAlign: 'center'}}>
-                    <div style={{fontSize: '16px', color: 'var(--text-color, #666)'}}>Loading spreadsheet...</div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '16px', color: 'var(--text-color, #666)' }}>Loading spreadsheet...</div>
                 </div>
             </div>
         );
@@ -528,6 +533,22 @@ export default function SpreadsheetPage() {
                     background: #111827;
                     color: #9ca3af;
                     border-color: #374151;
+                }
+
+                /* Category badge dark mode */
+                .dark .category-badge-metrics {
+                    background: #1e3a8a !important;
+                    color: #93c5fd !important;
+                }
+
+                .dark .category-badge-configurations {
+                    background: #92400e !important;
+                    color: #fbbf24 !important;
+                }
+
+                .dark .category-badge-models {
+                    background: #14532d !important;
+                    color: #86efac !important;
                 }
 
                 /* Merged cell styling */
@@ -656,20 +677,60 @@ export default function SpreadsheetPage() {
                             </div>
                         </div>
 
+                        <div style={styles.ribbonGroup}>
+                            <label style={styles.ribbonLabel}>Category</label>
+                            <div style={styles.ribbonButtons}>
+                                <select
+                                    value={category}
+                                    onChange={(e) => setCategory(e.target.value)}
+                                    style={{
+                                        ...styles.button,
+                                        minWidth: '120px',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    <option value="">Select Category</option>
+                                    <option value="metrics">Metrics</option>
+                                    <option value="configurations">Configurations</option>
+                                    <option value="models">Models</option>
+                                </select>
+                            </div>
+                        </div>
+
                         {/* Save Status Indicator */}
-                        <div style={{marginLeft: 'auto', display: 'flex', alignItems: 'center'}}>
+                        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            {/* Category Badge */}
+                            {category && (
+                                <div
+                                    className={`category-badge-${category}`}
+                                    style={{
+                                        padding: '4px 8px',
+                                        borderRadius: '12px',
+                                        fontSize: '12px',
+                                        fontWeight: '500',
+                                        textTransform: 'capitalize',
+                                        background: category === 'metrics' ? '#dbeafe' :
+                                            category === 'configurations' ? '#fef3c7' :
+                                                category === 'models' ? '#dcfce7' : '#f3f4f6',
+                                        color: category === 'metrics' ? '#1e40af' :
+                                            category === 'configurations' ? '#92400e' :
+                                                category === 'models' ? '#166534' : '#374151',
+                                    }}>
+                                    {category}
+                                </div>
+                            )}
                             {saveStatus === 'saving' && (
                                 <div style={{
                                     ...styles.saveStatus,
                                     background: '#fef3c7',
                                     color: '#92400e',
                                 }}>
-                                    <svg style={{width: '16px', height: '16px', animation: 'spin 1s linear infinite'}}
-                                         viewBox="0 0 24 24">
-                                        <circle style={{opacity: 0.25}} cx="12" cy="12" r="10" stroke="currentColor"
-                                                strokeWidth="4" fill="none"></circle>
-                                        <path style={{opacity: 0.75}} fill="currentColor"
-                                              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                    <svg style={{ width: '16px', height: '16px', animation: 'spin 1s linear infinite' }}
+                                        viewBox="0 0 24 24">
+                                        <circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor"
+                                            strokeWidth="4" fill="none"></circle>
+                                        <path style={{ opacity: 0.75 }} fill="currentColor"
+                                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
                                     </svg>
                                     <span>Saving...</span>
                                 </div>
@@ -680,9 +741,9 @@ export default function SpreadsheetPage() {
                                     background: '#d1fae5',
                                     color: '#065f46',
                                 }}>
-                                    <svg style={{width: '16px', height: '16px'}} viewBox="0 0 24 24" fill="none"
-                                         stroke="currentColor" strokeWidth="2">
-                                        <path d="M20 6L9 17l-5-5"/>
+                                    <svg style={{ width: '16px', height: '16px' }} viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" strokeWidth="2">
+                                        <path d="M20 6L9 17l-5-5" />
                                     </svg>
                                     <span>Saved</span>
                                 </div>
@@ -693,9 +754,9 @@ export default function SpreadsheetPage() {
                                     background: '#fee2e2',
                                     color: '#991b1b',
                                 }}>
-                                    <svg style={{width: '16px', height: '16px'}} viewBox="0 0 24 24" fill="none"
-                                         stroke="currentColor" strokeWidth="2">
-                                        <path d="M6 18L18 6M6 6l12 12"/>
+                                    <svg style={{ width: '16px', height: '16px' }} viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" strokeWidth="2">
+                                        <path d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                     <span>Save failed</span>
                                 </div>
