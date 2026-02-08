@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { CollaborativeCanvas } from '@/components/canvas/collaborative-canvas';
 import { ComponentList } from '@/components/canvas/component-list';
+import { ExportProjectButton } from '@/components/projects/export-project-button';
 import 'tldraw/tldraw.css';
 
 interface CanvasPageProps {
@@ -64,9 +65,15 @@ export default async function CanvasPage({ params }: CanvasPageProps) {
     }
 
     return (
-        <div className="h-[calc(100vh-8rem)] w-full flex">
-            <div className="flex-1">
-                <CollaborativeCanvas projectId={params.projectId} canvasId={canvas.id} />
+        <div className="h-[calc(100vh-8rem)] w-full flex flex-col">
+            <div className="flex items-center justify-between px-4 py-2 border-b bg-white">
+                <h1 className="text-lg font-semibold">{project.name}</h1>
+                <ExportProjectButton projectId={params.projectId} projectName={project.name} />
+            </div>
+            <div className="flex-1 flex">
+                <div className="flex-1">
+                    <CollaborativeCanvas canvasId={canvas.id} />
+                </div>
             </div>
         </div>
     );
