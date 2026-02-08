@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-appdb}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+
+  websocket:
+    image: node:20-alpine
+    working_dir: /usr/src/app
+    env_file:
+      - .env
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    command: sh -c "npm install && node websocket-server.js"
+    environment:
+      - PORT=${WS_PORT:-3001}
+      - DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@db:5432/appdb}
+    ports:
+      - "${WS_PORT:-3001}:3001"
+    depends_on:
+      - db
+
+  next:
+    image: node:20-alpine
+    working_dir: /usr/src/app
+    env_file:
+      - .env
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    command: sh -c "npm install && npm run build && npm run start"
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgres://postgres:postgres@db:5432/appdb}
+      - NEXT_PUBLIC_WS_URL=${NEXT_PUBLIC_WS_URL:-ws://websocket:3001}
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=${NEXT_PORT:-3000}
+    ports:
+      - "${NEXT_PORT:-3000}:3000"
+    depends_on:
+      - db
+      - websocket
+
+volumes:
+  db-data:
+
+networks:
+  default:
+    driver: bridge
